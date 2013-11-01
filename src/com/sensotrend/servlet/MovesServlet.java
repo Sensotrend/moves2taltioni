@@ -31,6 +31,10 @@ public class MovesServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/plain"); // should be application/json
 		String uid = request.getParameter("uid"); 
+        if (uid == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Need uid parameter");
+            return;
+        }
 		URL url = new URL("https://api.moves-app.com/api/v1/user/activities/daily/2013-10-25?access_token="+
 		        AccessTokenStorage.getInstance().getMovesToken(uid));
 		BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
