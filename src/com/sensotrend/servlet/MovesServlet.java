@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,6 +17,7 @@ import com.sensotrend.data.AccessTokenStorage;
 import com.sensotrend.data.TaltioniDataAccess;
 import com.sensotrend.data.TaltioniDataAccess.SensotrendFileType;
 import com.sensotrend.filter.OAuthFilter;
+
 import fi.taltioni._0._1.taltioniapi.TaltioniServiceStub.AccessToken;
 
 /**
@@ -34,9 +38,20 @@ public class MovesServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Need uid parameter");
             return;
         }
-		URL url = new URL("https://api.moves-app.com/api/v1/user/activities/daily/2013-10-25?access_token="+
+        // add yesterday's activities
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		URL url = new URL("https://api.moves-app.com/api/v1/user/activities/daily/" +
+				format.format(cal.getTime())+ 
+				"?access_token="+
 		        AccessTokenStorage.getInstance().getMovesToken(uid));
+		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+
+// handy for debugging 
+//		org.apache.commons.io.IOUtils.copy(reader, response.getWriter());
+		
 		reader.mark(0);
         AccessToken token = AccessTokenStorage.getInstance().getToken((String)request.getSession().getAttribute(OAuthFilter.UID_ATTRIBUTE));
         int count = TaltioniDataAccess.getInstance().storeFileValues(SensotrendFileType.MOVES_JSON, null,
