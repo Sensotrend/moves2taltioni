@@ -33,6 +33,7 @@ public class MovesAuthenticationServlet extends HttpServlet {
 	public static final String CLIENT_ID = TaltioniDataAccess.getInstance().getProperty("MOVES_CLIENT_ID");
 	public static final String AUTHORIZATION_LOCATION = TaltioniDataAccess.getInstance().getProperty("MOVES_AUTHORIZATION_LOCATION");
 	public static final String TOKEN_LOCATION = TaltioniDataAccess.getInstance().getProperty("MOVES_TOKEN_LOCATION");
+	public static final String MOVES_TRANSFER_URL = TaltioniDataAccess.getInstance().getProperty("MOVES_TRANSFER_URL");
 	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -121,7 +122,8 @@ public class MovesAuthenticationServlet extends HttpServlet {
 			String key = (String)session.getAttribute("uid");
 			AccessTokenStorage.getInstance().setMovesToken(key, oAuthResponse.getAccessToken());
             response.getWriter().write("<html><body><h1>Moves connected to Taltioni.</h1>\n<p>UID="+key+"</p>\n");
-            response.getWriter().write("<a href=\"/Moves2Taltioni/Taltioni/Moves?uid="+key+"\">Transfer values!</a>\n</body></html>");
+            response.getWriter().write("<a href=\""+MOVES_TRANSFER_URL+
+            	"?uid="+key+"\">Transfer values!</a>\n</body></html>");
 		}
 	}
 }
