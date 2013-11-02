@@ -107,7 +107,7 @@ public class TaltioniDataAccess {
         		}
         	}
         }
-		APPLICATION_ID.setApplicationId(getProperty("APPLICATION_ID"));
+		APPLICATION_ID.setApplicationId(getProperty("TALTIONI_APPLICATION_ID"));
 		// for Taltioni and for JSON exchange, express time in UTC time
 		// for log file parsing, use server time zone for now
 		// TODO: the application sending the log file should indicate the correct timezone
@@ -163,7 +163,7 @@ public class TaltioniDataAccess {
 				timestamp.getTimestamp() + ";" + 
 				APPLICATION_ID.getApplicationId() + ";" +
 				(token != null ? (token.getAccessToken() + ";") : "") + 
-				getProperty("SHARED_SECRET");
+				getProperty("TALTIONI_SHARED_SECRET");
 		
 		MessageDigest md;
 		try {
