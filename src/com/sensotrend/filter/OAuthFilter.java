@@ -78,16 +78,13 @@ public class OAuthFilter implements Filter {
 								+ httpRequest.getQueryString() : "");
 
 				try {
-				    String redirect = AuthenticationServlet.REDIRECT_URI;
-				    if (request.getServerName().contains("localhost"))
-				        redirect = AuthenticationServlet.LOCAL_REDIRECT_URI;
 					OAuthClientRequest authRequest = OAuthClientRequest
 							.authorizationLocation(
 									AuthenticationServlet.AUTHORIZATION_LOCATION)
 							.setResponseType(ResponseType.CODE.toString())
 							.setClientId(AuthenticationServlet.CLIENT_ID)
                             .setState(uri)
-							.setRedirectURI(redirect)
+							.setRedirectURI(AuthenticationServlet.REDIRECT_URI)
 							.buildQueryMessage();
 					// send the client to the authentication process
 					((HttpServletResponse) response).sendRedirect(authRequest

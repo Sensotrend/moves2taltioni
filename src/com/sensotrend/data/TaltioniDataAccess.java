@@ -1,7 +1,10 @@
 package com.sensotrend.data;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.CharBuffer;
 import java.rmi.RemoteException;
@@ -53,9 +56,7 @@ import fi.taltioni._0._1.taltioniapi.TaltioniServiceStub.Timestamp;
 public class TaltioniDataAccess {
 	
 	private static final TaltioniDataAccess instance = new TaltioniDataAccess();
-	
-	private final String TALTIONI_URL = "https://asiakastestipalvelut.taltioni.fi:9443/Taltioni";
-	
+		
 	public final ApplicationId APPLICATION_ID = new ApplicationId();
 	private final Properties props = new Properties();
 	
@@ -75,8 +76,6 @@ public class TaltioniDataAccess {
         DEXCOM_XML,
         MOVES_JSON};
 
-    private final AccessToken testToken = new AccessToken();
-	
 	private final TaltioniServiceStub TALTIONI;
 	
 
@@ -84,26 +83,37 @@ public class TaltioniDataAccess {
 		return instance;
 	}
 	
-	public ApplicationId getApplicationId() {return APPLICATION_ID;}
-	public SimpleDateFormat getCSVDateFormat() {return CSV_DATEFORMAT;}
-	public SimpleDateFormat getCSVDateTimeFormat() {return CSV_DATETIMEFORMAT;}
-	public String getProperty(String key) {return props.getProperty(key);}
-
 	private TaltioniDataAccess() {
+		InputStream is = null;
         try {
-            props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("app.properties"));
+        	String home = System.getProperty("user.home");
+        	File propertiesFile = new File(home, "moves2taltioni.properties");
+        	String location = propertiesFile.getAbsolutePath();
+        	System.out.println(home + ", " + location);
+        	if (propertiesFile.exists()) {
+        		is = new FileInputStream(propertiesFile);
+        	} else {
+                is = Thread.currentThread().getContextClassLoader().getResourceAsStream("app.properties");
+        	}
+            props.load(is);
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        } finally {
+        	if (is != null) {
+        		try {
+        			is.close();
+        		} catch (IOException e) {
+        		}
+        	}
         }
 		APPLICATION_ID.setApplicationId(getProperty("APPLICATION_ID"));
 		// for Taltioni and for JSON exchange, express time in UTC time
 		// for log file parsing, use server time zone for now
 		// TODO: the application sending the log file should indicate the correct timezone
 		TALTIONI_DATEFORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
-		testToken.setAccessToken(props.getProperty("testToken"));
 		try {
-			TALTIONI = new TaltioniServiceStub(TALTIONI_URL);
+			TALTIONI = new TaltioniServiceStub(getProperty("TALTIONI_URL"));
 		} catch (AxisFault e) {
 			InstantiationError ie = new InstantiationError();
 			ie.initCause(e);
@@ -111,6 +121,11 @@ public class TaltioniDataAccess {
 		}
 	}
 	
+	public ApplicationId getApplicationId() {return APPLICATION_ID;}
+	public SimpleDateFormat getCSVDateFormat() {return CSV_DATEFORMAT;}
+	public SimpleDateFormat getCSVDateTimeFormat() {return CSV_DATETIMEFORMAT;}
+	public String getProperty(String key) {return props.getProperty(key);}
+
 	/**
 	 * Generates unique request ID for Taltioni OAuth request.
 	 * @return
@@ -148,7 +163,7 @@ public class TaltioniDataAccess {
 				timestamp.getTimestamp() + ";" + 
 				APPLICATION_ID.getApplicationId() + ";" +
 				(token != null ? (token.getAccessToken() + ";") : "") + 
-				props.getProperty("SHARED_SECRET");
+				getProperty("SHARED_SECRET");
 		
 		MessageDigest md;
 		try {

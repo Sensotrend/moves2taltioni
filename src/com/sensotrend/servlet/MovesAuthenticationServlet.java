@@ -61,15 +61,11 @@ public class MovesAuthenticationServlet extends HttpServlet {
 				// No error indicated.
 				// Initiate Moves connection.
                 try {
-                    String redirect = REDIRECT_URI;
-                    if (request.getServerName().contains("localhost"))
-                        redirect = TaltioniDataAccess.getInstance().getProperty("LOCAL_MOVES_REDIRECT_URI");
-                    
                     OAuthClientRequest authRequest = OAuthClientRequest
                             .authorizationLocation(AUTHORIZATION_LOCATION)
                             .setResponseType(ResponseType.CODE.toString())
                             .setClientId(CLIENT_ID)
-                            .setRedirectURI(redirect)
+                            .setRedirectURI(REDIRECT_URI)
                             .setScope("activity")
                             .buildQueryMessage();
                     // send the client to the authentication process
@@ -84,10 +80,6 @@ public class MovesAuthenticationServlet extends HttpServlet {
 		} else {
 			// we got the auth code from the auth server, let's exchange it to
 			// the access token
-            String redirect = REDIRECT_URI;
-            if (request.getServerName().contains("localhost"))
-                redirect = TaltioniDataAccess.getInstance().getProperty("LOCAL_MOVES_REDIRECT_URI");
-		            
 			OAuthClientRequest tokenRequest;
 			TokenRequestBuilder builder;
 			try {
@@ -95,7 +87,7 @@ public class MovesAuthenticationServlet extends HttpServlet {
 						.tokenLocation(TOKEN_LOCATION)
 						.setGrantType(GrantType.AUTHORIZATION_CODE)
 						.setCode(code)
-						.setRedirectURI(redirect)
+						.setRedirectURI(REDIRECT_URI)
 						.setClientId(CLIENT_ID)
 				        .setClientSecret(TaltioniDataAccess.getInstance().getProperty("MOVES_CLIENT_SECRET"));
 				tokenRequest = builder.buildBodyMessage();

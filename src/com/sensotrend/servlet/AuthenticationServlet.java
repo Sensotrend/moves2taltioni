@@ -31,11 +31,10 @@ import com.sensotrend.data.TaltioniDataAccess;
 public class AuthenticationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	public static final String REDIRECT_URI = TaltioniDataAccess.getInstance().getProperty("REDIRECT_URI");
-    public static final String LOCAL_REDIRECT_URI = TaltioniDataAccess.getInstance().getProperty("LOCAL_REDIRECT_URI");
-	public static final String CLIENT_ID = TaltioniDataAccess.getInstance().getProperty("CLIENT_ID");
-	public static final String AUTHORIZATION_LOCATION = TaltioniDataAccess.getInstance().getProperty("AUTHORIZATION_LOCATION");
-	public static final String TOKEN_LOCATION = TaltioniDataAccess.getInstance().getProperty("TOKEN_LOCATION");
+	public static final String REDIRECT_URI = TaltioniDataAccess.getInstance().getProperty("TALTIONI_REDIRECT_URI");
+	public static final String CLIENT_ID = TaltioniDataAccess.getInstance().getProperty("TALTIONI_CLIENT_ID");
+	public static final String AUTHORIZATION_LOCATION = TaltioniDataAccess.getInstance().getProperty("TALTIONI_AUTHORIZATION_LOCATION");
+	public static final String TOKEN_LOCATION = TaltioniDataAccess.getInstance().getProperty("TALTIONI_TOKEN_LOCATION");
 	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -73,14 +72,11 @@ public class AuthenticationServlet extends HttpServlet {
 			OAuthClientRequest tokenRequest;
 			TokenRequestBuilder builder;
 			try {
-                String redirect = REDIRECT_URI;
-                if (request.getServerName().contains("localhost"))
-                    redirect = LOCAL_REDIRECT_URI;
 				builder = OAuthClientRequest
 						.tokenLocation(TOKEN_LOCATION)
 						.setGrantType(GrantType.AUTHORIZATION_CODE)
 						.setCode(code)
-						.setRedirectURI(redirect)
+						.setRedirectURI(REDIRECT_URI)
 						.setClientId(CLIENT_ID);
 				tokenRequest = builder.buildBodyMessage();
 			} catch (OAuthSystemException e) {
@@ -89,8 +85,8 @@ public class AuthenticationServlet extends HttpServlet {
 				return;
 			}
 			
-			String header = buildBasicAuth(TaltioniDataAccess.getInstance().getProperty("CLIENT_ID"),
-			        TaltioniDataAccess.getInstance().getProperty("APPLICATION_ID"));
+			String header = buildBasicAuth(CLIENT_ID,
+			        TaltioniDataAccess.getInstance().getProperty("TALTIONI_APPLICATION_ID"));
 			tokenRequest.addHeader(HeaderType.AUTHORIZATION, header);
 			
 			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
