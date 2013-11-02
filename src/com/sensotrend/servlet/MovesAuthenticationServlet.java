@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -132,12 +131,5 @@ public class MovesAuthenticationServlet extends HttpServlet {
             response.getWriter().write("<html><body><h1>Moves connected to Taltioni.</h1>\n<p>UID="+key+"</p>\n");
             response.getWriter().write("<a href=\"/Moves2Taltioni/Taltioni/Moves?uid="+key+"\">Transfer values!</a>\n</body></html>");
 		}
-	}
-	
-	private String buildBasicAuth(String username, String password) {
-		if (username == null || password == null) {
-			throw new NullPointerException();
-		}
-		return "Basic " + Base64.encodeBase64String((username + ":" + password).getBytes());
 	}
 }

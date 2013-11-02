@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import com.sensotrend.data.AccessTokenStorage;
 import com.sensotrend.data.TaltioniDataAccess;
 import com.sensotrend.data.TaltioniDataAccess.SensotrendFileType;

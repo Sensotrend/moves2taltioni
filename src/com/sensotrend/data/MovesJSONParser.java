@@ -12,7 +12,6 @@ import org.codehaus.jettison.json.JSONObject;
 import fi.taltioni._0._1.taltioniapi.TaltioniServiceStub.ArrayOfObservation;
 import fi.taltioni._0._1.taltioniapi.TaltioniServiceStub.ArrayOfObservationItem;
 import fi.taltioni._0._1.taltioniapi.TaltioniServiceStub.AuditInfo;
-import fi.taltioni._0._1.taltioniapi.TaltioniServiceStub.DeviceInformation;
 import fi.taltioni._0._1.taltioniapi.TaltioniServiceStub.HealthRecordData;
 import fi.taltioni._0._1.taltioniapi.TaltioniServiceStub.Observation;
 import fi.taltioni._0._1.taltioniapi.TaltioniServiceStub.ObservationItem;
