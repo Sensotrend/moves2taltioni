@@ -4,7 +4,7 @@ moves2taltioni
 Transfer data from [Moves](https://www.moves-app.com/) to [Taltioni](http://www.taltioni.fi/en)
 
 Please note that a REST API is also in the works for Taltioni!
-You might like that one better than the OAP API used in this example. Please check it out at https://rest.taltioni.fi/Help
+You might like that one better than the SOAP API used in this example. Please check it out at https://rest.taltioni.fi/Help
 
 Instructions for getting started below (in Finnish).
 
